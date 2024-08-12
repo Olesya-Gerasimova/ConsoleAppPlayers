@@ -2,3 +2,4 @@ data.json
 .idea
 target
 *log.http
+dependency-reduced-pom.xml
