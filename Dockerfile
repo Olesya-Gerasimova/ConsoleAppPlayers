@@ -1,4 +1,4 @@
-FROM eclipse-temurin:8u422-b05-jre-noble
+FROM openjdk:17-ea-10-alpine3.13
 COPY target/WebApp.jar /WebApp.jar
 # This is the port that your javalin application will listen on
 EXPOSE 7070
