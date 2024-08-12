@@ -1,0 +1,20 @@
+### Получить список
+GET http://localhost:7070/players
+
+### Получить по id
+GET http://localhost:7070/players/1
+
+### Создать игрока
+POST http://localhost:7070/players
+Content-Type: application/json
+
+{"name": "Nimbus 2000"}
+
+### Добавить очков игроку
+PATCH http://localhost:7070/players/3
+Content-Type: application/json
+
+{"points": 90}
+
+### Удалить игрока по id
+DELETE http://localhost:7070/players/3
