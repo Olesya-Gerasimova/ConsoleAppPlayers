@@ -32,10 +32,12 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public int createPlayer(String nickname) {
-        if (nicknames.contains(nickname)){
-            throw new IllegalArgumentException("Nickname is already in use: "+ nickname);
+        if (nickname == null || nickname.trim().isEmpty()) {
+            throw new IllegalArgumentException("Nickname cannot be empty or null.");
         }
-
+        if (nicknames.contains(nickname)) {
+            throw new IllegalArgumentException("Nickname is already in use: " + nickname);
+        }
         counter++;
         Player player = new Player(counter, nickname, 0, true);
         this.players.put(player.getId(), player);
@@ -56,9 +58,12 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     @Override
-    public int addPoints(int playerId, int points) {
-        if ( !this.players.containsKey(playerId)){
-            throw new NoSuchElementException("No such user: " + playerId);
+    public int addPoints(int playerId,  int points) {
+        if (points < 0) {
+            throw new IllegalArgumentException("Points cannot be negative.");
+        }
+        if (playerId <= 0 || !this.players.containsKey(playerId)) {
+            throw new IllegalArgumentException("Invalid player ID: " + playerId);
         }
 
         Player player = this.players.get(playerId);
@@ -68,6 +73,7 @@ public class PlayerServiceImpl implements PlayerService {
         saveToFile();
         return player.getPoints();
     }
+
 
     private void initStorages() {
         Collection<Player> currentList = Collections.EMPTY_LIST;
@@ -83,8 +89,8 @@ public class PlayerServiceImpl implements PlayerService {
         for (Player player : currentList) {
             players.put(player.getId(), player);
             nicknames.add(player.getNick());
-            if (player.getId() > counter){
-                counter = player.getId();
+            if (player.getId() > counter) {
+                counter = player.getId(); // Установка счетчика в максимальный ID
             }
         }
     }
@@ -95,6 +101,23 @@ public class PlayerServiceImpl implements PlayerService {
         } catch (Exception ex){
             System.err.println("File saving error");
         }
+    }
+
+    public void clearPlayers() {
+        players.clear();
+        nicknames.clear();
+        counter = 0;
+    }
+
+    public void updatePlayerNickname(int playerId, String newNickname) {
+        if (nicknames.contains(newNickname)) {
+            throw new IllegalArgumentException("Nickname is already in use: " + newNickname);
+        }
+        Player player = getPlayerById(playerId);
+        nicknames.remove(player.getNick()); // Удаляем старый никнейм из набора
+        player.setNick(newNickname);
+        nicknames.add(newNickname); // Добавляем новый никнейм в набор
+        saveToFile();
     }
 
 }
